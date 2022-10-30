@@ -1,17 +1,13 @@
 package com.project.pixchallenge.web.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.annotation.Nulls;
 import com.project.pixchallenge.core.domain.AccountType;
+import com.project.pixchallenge.core.domain.Key;
 import com.project.pixchallenge.core.domain.KeyType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
@@ -50,5 +46,17 @@ public class CreateKeyRequestWebDTO {
 
     @Schema(description = "Sobrenome do titular da conta")
     private String lastName;
+
+    public Key toDomain() {
+        return Key.builder()
+                .type(keyType)
+                .value(keyValue)
+                .accountType(accountType)
+                .accountNumber(accountNumber)
+                .branchNumber(branchNumber)
+                .name(name)
+                .lastName(lastName)
+                .build();
+    }
 
 }

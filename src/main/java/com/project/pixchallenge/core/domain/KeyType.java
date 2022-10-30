@@ -20,4 +20,12 @@ public enum KeyType {
     RANDOM(new RandomKeyValidator());
 
     private final KeyValidator validator;
+
+    public int getMaxKeys() {
+        if (CNPJ.equals(this)) {
+            return 20;
+        }
+
+        return 5;
+    }
 }

@@ -32,10 +32,10 @@ public class KeyEntity {
     @Column(name = "id", updatable = false, unique = true, nullable = false)
     private UUID id;
 
-    @Column(name = "key_type", nullable = false)
+    @Column(name = "key_type", updatable = false, nullable = false)
     private KeyType type;
 
-    @Column(name = "key_value", nullable = false)
+    @Column(name = "key_value", updatable = false, nullable = false)
     private String value;
 
     @Column(nullable = false)
@@ -77,6 +77,23 @@ public class KeyEntity {
                 .name(key.getName())
                 .lastName(key.getLastName())
                 .active(key.isActive())
+                .build();
+    }
+
+    public Key toKey() {
+        return Key.builder()
+                .id(id)
+                .type(type)
+                .value(value)
+                .accountType(accountType)
+                .accountNumber(accountNumber)
+                .branchNumber(branchNumber)
+                .name(name)
+                .lastName(lastName)
+                .createdAt(createdAt)
+                .updateAt(updatedAt)
+                .inactivationDate(inactivationDate)
+                .active(active)
                 .build();
     }
 

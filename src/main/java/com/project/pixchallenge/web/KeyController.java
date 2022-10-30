@@ -1,6 +1,8 @@
 package com.project.pixchallenge.web;
 
+import com.project.pixchallenge.core.usecases.CreateKeyUseCase;
 import com.project.pixchallenge.web.dto.request.CreateKeyRequestWebDTO;
+import com.project.pixchallenge.web.dto.response.KeyResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -23,14 +25,23 @@ import javax.validation.constraints.NotNull;
 @RequiredArgsConstructor
 public class KeyController {
 
+    private final CreateKeyUseCase createKeyUseCase;
+
     @Operation(description = "Inclusão de Chaves PIX")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CreateKeyRequestWebDTO create(@RequestBody @Valid @NotNull final CreateKeyRequestWebDTO requestWebDTO) {
+    public KeyResponseDTO create(@RequestBody @Valid @NotNull final CreateKeyRequestWebDTO requestWebDTO) {
 
         log.info("Key_creating {}", requestWebDTO.getKeyValue());
 
-        return requestWebDTO;
+        var keyValidator = requestWebDTO.getKeyType().getValidator();
+        keyValidator.validate(requestWebDTO.getKeyValue());
+
+        var savedKey = createKeyUseCase.execute(requestWebDTO.toDomain());
+
+        log.info("Key_saved", savedKey);
+
+        return KeyResponseDTO.from(savedKey);
     }
 
 }
