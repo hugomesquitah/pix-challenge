@@ -25,6 +25,11 @@ public class Key {
     private LocalDateTime createdAt;
     private LocalDateTime updateAt;
     private LocalDateTime inactivationDate;
-    private KeyStatus status;
+    private boolean active;
+
+
+    public void markAsActive(){
+        active = true;
+    }
 
 }
