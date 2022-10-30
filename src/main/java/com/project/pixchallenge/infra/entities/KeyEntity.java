@@ -9,9 +9,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -24,6 +28,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "pix_keys")
 public class KeyEntity {
 
@@ -33,12 +38,14 @@ public class KeyEntity {
     private UUID id;
 
     @Column(name = "key_type", updatable = false, nullable = false)
+    @Enumerated(EnumType.STRING)
     private KeyType type;
 
     @Column(name = "key_value", updatable = false, nullable = false)
     private String value;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private AccountType accountType;
 
     @Column(nullable = false)

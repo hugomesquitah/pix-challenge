@@ -1,0 +1,19 @@
+version: "3.7"
+
+services:
+  mysql:
+    command: "--secure-file-priv=/tmp"
+    image: mysql:latest
+    restart: always
+    environment:
+      - "MYSQL_DATABASE=challenge_keys"
+      - "MYSQL_USER=ms-pix-challenge"
+      - "MYSQL_PASSWORD=123456"
+      - "MYSQL_ROOT_PASSWORD=123456"
+    ports:
+      - "13306:3306"
+    volumes:
+      - 'mysql:/var/lib/mysql'
+
+volumes:
+  mysql:

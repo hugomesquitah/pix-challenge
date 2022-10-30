@@ -2,9 +2,6 @@ package com.project.pixchallenge.core.exception;
 
 public class KeyValidatorException extends RuntimeException {
 
-    public KeyValidatorException() {
-    }
-
     public KeyValidatorException(String message) {
         super(message);
     }

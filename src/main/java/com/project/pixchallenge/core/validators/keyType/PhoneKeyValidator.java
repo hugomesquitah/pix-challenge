@@ -13,7 +13,7 @@ public class PhoneKeyValidator implements KeyValidator {
         FormatValidator.emptyBlankValidator(value, TYPE_NAME);
 
         if (!value.matches(FORMAT_PHONE_REGEX)) {
-            throw new KeyValidatorException("Invalid Phone" + value);
+            throw new KeyValidatorException("Invalid Phone: " + value);
         }
 
     }
