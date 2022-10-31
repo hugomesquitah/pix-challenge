@@ -21,6 +21,12 @@ public class KeyEntitySpecification implements Specification<KeyEntity> {
     public Predicate toPredicate(Root<KeyEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
         var predicates = new ArrayList<Predicate>();
 
+        if (Objects.nonNull(key.getInactivationDate())) {
+            predicates.add(criteriaBuilder.between(root.get("inactivationDate"), key.getInactivationDate(), key.getInactivationDate()));
+            predicates.add(criteriaBuilder.equal(root.get("active"), false));
+        } else
+            predicates.add(criteriaBuilder.equal(root.get("active"), true));
+
         if (Objects.nonNull(key.getId()))
             predicates.add(criteriaBuilder.equal(root.get("id"), key.getId()));
         if (Objects.nonNull(key.getType()))
@@ -33,8 +39,6 @@ public class KeyEntitySpecification implements Specification<KeyEntity> {
             predicates.add(criteriaBuilder.equal(root.get("name"), key.getName()));
         if (Objects.nonNull(key.getCreatedAt()))
             predicates.add(criteriaBuilder.between(root.get("createdAt"), key.getCreatedAt(), key.getCreatedAt()));
-        if (Objects.nonNull(key.getInactivationDate()))
-            predicates.add(criteriaBuilder.between(root.get("inactivationDate"), key.getInactivationDate(), key.getInactivationDate()));
 
         return criteriaBuilder.and(predicates.toArray(Predicate[]::new));
     }

@@ -49,7 +49,7 @@ public class CreateKeyUseCaseTest {
     }
 
     @Test
-    void when_executeWitSuccess_expect_noExceptions() {
+    void when_executeWithSuccess_expect_noExceptions() {
         when(findKeyPort.findByValue(anyString())).thenReturn(Optional.empty());
         when(findKeyPort.findByAccount(anyInt(), anyInt())).thenReturn(Collections.emptyList());
 
