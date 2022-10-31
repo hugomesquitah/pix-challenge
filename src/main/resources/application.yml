@@ -1,3 +1,6 @@
+app:
+  version: @project.version@
+
 spring:
   application:
     name: pix-challenge
@@ -13,5 +16,13 @@ spring:
         format_sql: true
     show-sql: true
   flyway:
+    enabled: true
+
+springdoc:
+  packages-to-scan: com.project.pixchallenge.web
+  paths-to-match: /**
+  api-docs:
+    path: /api-docs
+  swagger-ui:
     enabled: true
 

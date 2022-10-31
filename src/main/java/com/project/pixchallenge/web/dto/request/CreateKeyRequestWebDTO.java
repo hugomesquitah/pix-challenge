@@ -22,11 +22,11 @@ public class CreateKeyRequestWebDTO {
     @NotNull
     private String keyValue;
 
-    @Schema(description = "Tipo de Chave", allowableValues = {"PHONE", "EMAIL", "CPF", "CNPJ", "RANDOM"}, required = true)
+    @Schema(description = "Tipo de Chave", required = true)
     @NotNull
     private KeyType keyType;
 
-    @Schema(description = "Tipo da Conta", allowableValues = {"CHECKING", "SAVINGS"}, required = true)
+    @Schema(description = "Tipo da Conta", required = true)
     @NotNull
     private AccountType accountType;
 

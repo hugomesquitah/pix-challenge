@@ -20,7 +20,7 @@ public class KeyResponseDTO {
     @Schema(description = "Id unico da chave PIX", required = true)
     private UUID id;
 
-    @Schema(description = "Tipo de Chave", allowableValues = {"PHONE", "EMAIL", "CPF", "CNPJ", "RANDOM"}, required = true)
+    @Schema(description = "Tipo de Chave", required = true)
     private KeyType keyType;
 
     @Schema(description = "Chave de endereçamento para conta transacional", required = true)
@@ -29,7 +29,7 @@ public class KeyResponseDTO {
     @Schema(description = "Numero da Conta", required = true)
     private Integer accountNumber;
 
-    @Schema(description = "Tipo da Conta", allowableValues = {"CHECKING", "SAVINGS"}, required = true)
+    @Schema(description = "Tipo da Conta", required = true)
     private AccountType accountType;
 
     @Schema(description = "Numero da agencia", required = true)
