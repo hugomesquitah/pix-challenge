@@ -1,5 +1,6 @@
 package com.project.pixchallenge.web.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.project.pixchallenge.core.domain.AccountType;
 import com.project.pixchallenge.core.domain.Key;
 import com.project.pixchallenge.core.domain.KeyType;
@@ -12,8 +13,9 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
-@Builder
+@Builder(toBuilder = true)
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class KeyResponseDTO {
 
     @Schema(description = "Id unico da chave PIX", required = true)
@@ -40,8 +42,11 @@ public class KeyResponseDTO {
     @Schema(description = "Sobrenome do titular da conta")
     private String lastName;
 
-    @Schema(description = "Data e hora de registroda chave", required = true)
+    @Schema(description = "Data e hora de registro da chave", required = true)
     private LocalDateTime createdAt;
+
+    @Schema(description = "Data e hora de inativação da chave", required = true)
+    private LocalDateTime inactivationDate;
 
     public static KeyResponseDTO from(final Key key) {
         return KeyResponseDTO.builder()
@@ -54,6 +59,7 @@ public class KeyResponseDTO {
                 .name(key.getName())
                 .lastName(key.getLastName() == null ? "" : key.getLastName())
                 .createdAt(key.getCreatedAt())
+                .inactivationDate(key.getInactivationDate())
                 .build();
     }
 }

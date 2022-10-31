@@ -104,4 +104,21 @@ public class KeyEntity {
                 .build();
     }
 
+    public KeyEntity update(final Key key) {
+        this.accountType = key.getAccountType();
+        this.accountNumber = key.getAccountNumber();
+        this.branchNumber = key.getBranchNumber();
+        this.name = key.getName();
+        this.lastName = key.getLastName() == null ? this.getLastName() : key.getLastName();
+
+        return this;
+    }
+
+    public KeyEntity delete() {
+        this.active = false;
+        this.inactivationDate = LocalDateTime.now();
+
+        return this;
+    }
+
 }

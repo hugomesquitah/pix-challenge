@@ -1,6 +1,7 @@
 package com.project.pixchallenge.web;
 
 import com.project.pixchallenge.core.usecases.CreateKeyUseCase;
+import com.project.pixchallenge.core.usecases.DeleteKeyUseCase;
 import com.project.pixchallenge.core.usecases.UpdateKeyUseCase;
 import com.project.pixchallenge.web.dto.request.CreateKeyRequestWebDTO;
 import com.project.pixchallenge.web.dto.request.UpdateKeyRequestWebDTO;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,6 +34,7 @@ public class KeyController {
 
     private final CreateKeyUseCase createKeyUseCase;
     private final UpdateKeyUseCase updateKeyUseCase;
+    private final DeleteKeyUseCase deleteKeyUseCase;
 
     @Operation(description = "Inclusão de Chaves PIX")
     @PostMapping
@@ -56,13 +59,27 @@ public class KeyController {
     public KeyResponseDTO update(@RequestBody @Valid @NotNull final UpdateKeyRequestWebDTO requestWebDTO,
                                  @PathVariable UUID id) {
 
-        log.info("Key_updating {}", id, requestWebDTO);
+        log.info("Key_updating - Id: {}", id, requestWebDTO);
 
         var updatedKey = updateKeyUseCase.execute(requestWebDTO.toDomain(id));
 
         log.info("Key_updated", updatedKey);
 
         return KeyResponseDTO.from(updatedKey);
+    }
+
+    @Operation(description = "Deleção de Chaves PIX")
+    @DeleteMapping("{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public KeyResponseDTO delete(@PathVariable UUID id) {
+
+        log.info("Key_deleting - Id: {}", id);
+
+        var deletedKey = deleteKeyUseCase.execute(id);
+
+        log.info("Key_deleted", deletedKey);
+
+        return KeyResponseDTO.from(deletedKey);
     }
 
 }
