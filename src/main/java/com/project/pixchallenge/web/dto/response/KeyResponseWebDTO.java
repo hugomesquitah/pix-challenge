@@ -16,7 +16,7 @@ import java.util.UUID;
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class KeyResponseDTO {
+public class KeyResponseWebDTO {
 
     @Schema(description = "Id unico da chave PIX", required = true)
     private UUID id;
@@ -48,8 +48,8 @@ public class KeyResponseDTO {
     @Schema(description = "Data e hora de inativação da chave", required = true)
     private LocalDateTime inactivationDate;
 
-    public static KeyResponseDTO from(final Key key) {
-        return KeyResponseDTO.builder()
+    public static KeyResponseWebDTO from(final Key key) {
+        return KeyResponseWebDTO.builder()
                 .id(key.getId())
                 .keyType(key.getType())
                 .keyValue(key.getValue())

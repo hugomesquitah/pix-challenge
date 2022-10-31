@@ -4,6 +4,7 @@ import com.project.pixchallenge.core.exception.KeyValidatorException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -21,6 +22,22 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorDTO> handleIdempotencyException(MethodArgumentNotValidException e) {
+        var fieldErrors = e.getBindingResult().getFieldErrors()
+                .stream()
+                .map(FieldErrorDTO::from)
+                .collect(toList());
+
+        var response = ErrorDTO.from(UNPROCESSABLE_ENTITY, "Invalid Arguments", fieldErrors);
+
+        log.error("error_handleMethodArgumentNotValidException");
+
+        return ResponseEntity
+                .status(UNPROCESSABLE_ENTITY)
+                .body(response);
+    }
+
+    @ExceptionHandler(BindException.class)
+    public ResponseEntity<ErrorDTO> handleIdempotencyException(BindException e) {
         var fieldErrors = e.getBindingResult().getFieldErrors()
                 .stream()
                 .map(FieldErrorDTO::from)
