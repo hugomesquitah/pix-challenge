@@ -10,12 +10,4 @@ public class KeyValidatorException extends RuntimeException {
         super(message, cause);
     }
 
-    public KeyValidatorException(Throwable cause) {
-        super(cause);
-    }
-
-    public KeyValidatorException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
-
 }
