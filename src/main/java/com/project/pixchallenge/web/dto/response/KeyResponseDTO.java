@@ -1,6 +1,5 @@
 package com.project.pixchallenge.web.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.project.pixchallenge.core.domain.AccountType;
 import com.project.pixchallenge.core.domain.Key;
 import com.project.pixchallenge.core.domain.KeyType;
@@ -39,7 +38,6 @@ public class KeyResponseDTO {
     private String name;
 
     @Schema(description = "Sobrenome do titular da conta")
-    @JsonInclude
     private String lastName;
 
     @Schema(description = "Data e hora de registroda chave", required = true)
@@ -54,7 +52,7 @@ public class KeyResponseDTO {
                 .accountType(key.getAccountType())
                 .branchNumber(key.getBranchNumber())
                 .name(key.getName())
-                .lastName(key.getLastName())
+                .lastName(key.getLastName() == null ? "" : key.getLastName())
                 .createdAt(key.getCreatedAt())
                 .build();
     }

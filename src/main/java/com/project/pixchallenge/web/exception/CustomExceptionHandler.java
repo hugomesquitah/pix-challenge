@@ -9,7 +9,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.persistence.EntityNotFoundException;
+
 import static java.util.stream.Collectors.toList;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
 @RestControllerAdvice
@@ -50,6 +53,18 @@ public class CustomExceptionHandler {
         var errorDTO = ErrorDTO.from(UNPROCESSABLE_ENTITY, e.getMostSpecificCause().getMessage());
 
         log.error("error_httpMessageNotReadableException");
+
+        log.error(e.getMessage());
+
+        return errorDTO;
+    }
+
+    @ExceptionHandler({EntityNotFoundException.class})
+    @ResponseStatus(NOT_FOUND)
+    public ErrorDTO handleEntityNotFoundException(final EntityNotFoundException e) {
+        var errorDTO = ErrorDTO.from(NOT_FOUND, e.getMessage());
+
+        log.error("error_handleEntityNotFoundException");
 
         log.error(e.getMessage());
 

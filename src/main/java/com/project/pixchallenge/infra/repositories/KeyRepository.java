@@ -14,4 +14,6 @@ public interface KeyRepository extends PagingAndSortingRepository<KeyEntity, UUI
     List<KeyEntity> findByAccountNumberAndBranchNumber(Integer accountNumber, Integer branchNumber);
 
     Optional<KeyEntity> findByValue(String value);
+
+    Optional<KeyEntity> findByIdAndActiveIsTrue(UUID id);
 }

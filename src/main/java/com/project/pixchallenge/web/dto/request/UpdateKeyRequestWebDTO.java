@@ -2,7 +2,6 @@ package com.project.pixchallenge.web.dto.request;
 
 import com.project.pixchallenge.core.domain.AccountType;
 import com.project.pixchallenge.core.domain.Key;
-import com.project.pixchallenge.core.domain.KeyType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,21 +11,13 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.UUID;
 
 @Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateKeyRequestWebDTO {
-
-    @Schema(description = "Chave de endereçamento para conta transacional", required = true)
-    @NotNull
-    @Size(min = 1, max = 77)
-    private String keyValue;
-
-    @Schema(description = "Tipo de Chave", required = true)
-    @NotNull
-    private KeyType keyType;
+public class UpdateKeyRequestWebDTO {
 
     @Schema(description = "Tipo da Conta", required = true)
     @NotNull
@@ -51,10 +42,9 @@ public class CreateKeyRequestWebDTO {
     @Size(min = 1, max = 45)
     private String lastName;
 
-    public Key toDomain() {
+    public Key toDomain(final UUID id) {
         return Key.builder()
-                .type(keyType)
-                .value(keyValue)
+                .id(id)
                 .accountType(accountType)
                 .accountNumber(accountNumber)
                 .branchNumber(branchNumber)
@@ -62,5 +52,4 @@ public class CreateKeyRequestWebDTO {
                 .lastName(lastName)
                 .build();
     }
-
 }
