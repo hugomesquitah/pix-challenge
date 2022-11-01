@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static com.project.pixchallenge.helper.ObjectMapperHelper.OBJECT_MAPPER;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -76,6 +77,27 @@ public class KeyControllerIntegrationTest {
                 .andExpect(jsonPath("$.accountType", equalTo(updateKeyRequestWebDTO.getAccountType().name())))
                 .andExpect(jsonPath("$.branchNumber", equalTo(updateKeyRequestWebDTO.getBranchNumber())))
                 .andExpect(jsonPath("$.name", equalTo(updateKeyRequestWebDTO.getName())))
-                .andExpect(jsonPath("$.lastName", equalTo(updateKeyRequestWebDTO.getLastName())));
+                .andExpect(jsonPath("$.lastName", equalTo(updateKeyRequestWebDTO.getLastName())))
+                .andExpect(jsonPath("$.createdAt", notNullValue()));
+    }
+
+    @Test
+    void when_deleteKey_expect_statusOk() throws Exception {
+        var savedKey = keyRepository.save(KeyEntity.from(KeyBuilder.cpfCreated()));
+
+        mockMvc.perform(delete(BASE_URL + "/{id}", savedKey.getId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", equalTo(savedKey.getId().toString())))
+                .andExpect(jsonPath("$.keyType", equalTo(savedKey.getType().name())))
+                .andExpect(jsonPath("$.keyValue", equalTo(savedKey.getValue())))
+                .andExpect(jsonPath("$.accountNumber", equalTo(savedKey.getAccountNumber())))
+                .andExpect(jsonPath("$.accountType", equalTo(savedKey.getAccountType().name())))
+                .andExpect(jsonPath("$.branchNumber", equalTo(savedKey.getBranchNumber())))
+                .andExpect(jsonPath("$.name", equalTo(savedKey.getName())))
+                .andExpect(jsonPath("$.lastName", equalTo(savedKey.getLastName())))
+                .andExpect(jsonPath("$.createdAt", notNullValue()))
+                .andExpect(jsonPath("$.inactivationDate", notNullValue()));
     }
 }
