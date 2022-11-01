@@ -1,6 +1,8 @@
 package com.project.pixchallenge.web;
 
+import com.project.pixchallenge.builds.KeyBuilder;
 import com.project.pixchallenge.builds.KeyWebDTOBuilder;
+import com.project.pixchallenge.infra.entities.KeyEntity;
 import com.project.pixchallenge.infra.repositories.KeyRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -13,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static com.project.pixchallenge.helper.ObjectMapperHelper.OBJECT_MAPPER;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -53,5 +56,26 @@ public class KeyControllerIntegrationTest {
                 .andExpect(jsonPath("$.name", equalTo(createKeyRequestWebDTO.getName())))
                 .andExpect(jsonPath("$.lastName", equalTo(createKeyRequestWebDTO.getLastName())))
                 .andExpect(jsonPath("$.createdAt", notNullValue()));
+    }
+
+    @Test
+    void when_updateKey_expect_statusOk() throws Exception {
+        var savedKey = keyRepository.save(KeyEntity.from(KeyBuilder.cpfCreated()));
+
+        var updateKeyRequestWebDTO = KeyWebDTOBuilder.checkingUpdate();
+
+        mockMvc.perform(patch(BASE_URL + "/{id}", savedKey.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(OBJECT_MAPPER.asJsonString(updateKeyRequestWebDTO)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", equalTo(savedKey.getId().toString())))
+                .andExpect(jsonPath("$.keyType", equalTo(savedKey.getType().name())))
+                .andExpect(jsonPath("$.keyValue", equalTo(savedKey.getValue())))
+                .andExpect(jsonPath("$.accountNumber", equalTo(updateKeyRequestWebDTO.getAccountNumber())))
+                .andExpect(jsonPath("$.accountType", equalTo(updateKeyRequestWebDTO.getAccountType().name())))
+                .andExpect(jsonPath("$.branchNumber", equalTo(updateKeyRequestWebDTO.getBranchNumber())))
+                .andExpect(jsonPath("$.name", equalTo(updateKeyRequestWebDTO.getName())))
+                .andExpect(jsonPath("$.lastName", equalTo(updateKeyRequestWebDTO.getLastName())));
     }
 }
