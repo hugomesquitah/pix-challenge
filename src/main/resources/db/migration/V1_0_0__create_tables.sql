@@ -12,8 +12,7 @@ CREATE TABLE IF NOT EXISTS `pix_keys`
     updated_at datetime(3) NOT NULL,
     inactivation_date datetime(3),
     active boolean NOT NULL,
-    PRIMARY KEY (id)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    PRIMARY KEY (id));
 
 CREATE INDEX keys_value ON `pix_keys` (key_value);
 CREATE INDEX keys_account ON `pix_keys` (account_number, branch_number);
