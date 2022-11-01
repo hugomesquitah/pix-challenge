@@ -14,7 +14,7 @@ public class RandomKeyValidator implements KeyValidator {
         FormatValidator.maxLengthValidate(value, TYPE_NAME, MAX_RANDOM_KEY_SIZE);
 
         if (!value.matches("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")) {
-            throw new KeyValidatorException("Invalid Random Key " + value);
+            throw new KeyValidatorException("Invalid Random Key: " + value);
         }
     }
 }

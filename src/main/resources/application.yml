@@ -1,0 +1,28 @@
+app:
+  version: @project.version@
+
+spring:
+  application:
+    name: pix-challenge
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:13306/challenge_keys
+    username: ms-pix-challenge
+    password: 123456
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: false
+  flyway:
+    enabled: true
+
+springdoc:
+  packages-to-scan: com.project.pixchallenge.web
+  paths-to-match: /**
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    enabled: true
+
