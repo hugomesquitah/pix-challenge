@@ -1,5 +1,6 @@
 package com.project.pixchallenge.web.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.project.pixchallenge.core.domain.AccountType;
 import com.project.pixchallenge.core.domain.Key;
@@ -43,9 +44,11 @@ public class KeyResponseWebDTO {
     private String lastName;
 
     @Schema(description = "Data e hora de registro da chave", required = true)
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
     private LocalDateTime createdAt;
 
     @Schema(description = "Data e hora de inativação da chave", required = true)
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
     private LocalDateTime inactivationDate;
 
     public static KeyResponseWebDTO from(final Key key) {
