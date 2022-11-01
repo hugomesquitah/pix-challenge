@@ -3,6 +3,7 @@ package com.project.pixchallenge.builds;
 import com.project.pixchallenge.core.domain.AccountType;
 import com.project.pixchallenge.core.domain.KeyType;
 import com.project.pixchallenge.web.dto.request.CreateKeyRequestWebDTO;
+import com.project.pixchallenge.web.dto.request.UpdateKeyRequestWebDTO;
 
 public final class KeyWebDTOBuilder {
 
@@ -10,6 +11,16 @@ public final class KeyWebDTOBuilder {
         return CreateKeyRequestWebDTO.builder()
                 .keyValue("01649757050")
                 .keyType(KeyType.CPF)
+                .accountType(AccountType.CHECKING)
+                .accountNumber(12345678)
+                .branchNumber(1234)
+                .name("Fulano")
+                .lastName("de Tal")
+                .build();
+    }
+
+    public static UpdateKeyRequestWebDTO checkingUpdate() {
+        return UpdateKeyRequestWebDTO.builder()
                 .accountType(AccountType.CHECKING)
                 .accountNumber(12345678)
                 .branchNumber(1234)

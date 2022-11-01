@@ -21,11 +21,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.UUID;
+
 import static com.project.pixchallenge.helper.ObjectMapperHelper.OBJECT_MAPPER;
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -67,6 +70,8 @@ public class KeyControllerTest {
                 .build();
 
         createKeyRequestWebDTO = KeyWebDTOBuilder.cpfCreate();
+
+        updateKeyRequestWebDTO = KeyWebDTOBuilder.checkingUpdate();
     }
 
     @Test
@@ -211,6 +216,140 @@ public class KeyControllerTest {
                 .andExpect(jsonPath("$.message", equalTo("Invalid Arguments")))
                 .andExpect(jsonPath("$.fieldErrors[0].field", equalTo("accountType")))
                 .andExpect(jsonPath("$.fieldErrors[0].message", equalTo("must not be null")));
+    }
+
+    @Test
+    void when_createKeyWithInvalidName_expect_statusUnprocessableEntity() throws Exception {
+        createKeyRequestWebDTO.setName("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+
+        mockMvc.perform(post(BASE_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(OBJECT_MAPPER.asJsonString(createKeyRequestWebDTO)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.code", equalTo(422)))
+                .andExpect(jsonPath("$.error", equalTo("Unprocessable Entity")))
+                .andExpect(jsonPath("$.message", equalTo("Invalid Arguments")))
+                .andExpect(jsonPath("$.fieldErrors[0].field", equalTo("name")))
+                .andExpect(jsonPath("$.fieldErrors[0].message", equalTo("size must be between 1 and 30")));
+    }
+
+    @Test
+    void when_createKeyWithInvalidLastName_expect_statusUnprocessableEntity() throws Exception {
+        createKeyRequestWebDTO.setLastName("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+
+        mockMvc.perform(post(BASE_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(OBJECT_MAPPER.asJsonString(createKeyRequestWebDTO)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.code", equalTo(422)))
+                .andExpect(jsonPath("$.error", equalTo("Unprocessable Entity")))
+                .andExpect(jsonPath("$.message", equalTo("Invalid Arguments")))
+                .andExpect(jsonPath("$.fieldErrors[0].field", equalTo("lastName")))
+                .andExpect(jsonPath("$.fieldErrors[0].message", equalTo("size must be between 1 and 45")));
+    }
+
+    @Test
+    void when_updateKey_expect_statusOk() throws Exception {
+        var keyUpdated = KeyBuilder.cpfCreated();
+
+        when(updateKeyUseCase.execute(any())).thenReturn(keyUpdated);
+
+        mockMvc.perform(patch(BASE_URL + "/{id}", keyUpdated.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(OBJECT_MAPPER.asJsonString(updateKeyRequestWebDTO)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", equalTo(keyUpdated.getId().toString())))
+                .andExpect(jsonPath("$.keyType", equalTo(keyUpdated.getType().name())))
+                .andExpect(jsonPath("$.keyValue", equalTo(keyUpdated.getValue())))
+                .andExpect(jsonPath("$.accountNumber", equalTo(keyUpdated.getAccountNumber())))
+                .andExpect(jsonPath("$.accountType", equalTo(keyUpdated.getAccountType().name())))
+                .andExpect(jsonPath("$.branchNumber", equalTo(keyUpdated.getBranchNumber())))
+                .andExpect(jsonPath("$.name", equalTo(keyUpdated.getName())))
+                .andExpect(jsonPath("$.lastName", equalTo(keyUpdated.getLastName())))
+                .andExpect(jsonPath("$.createdAt", equalTo(ISO_LOCAL_DATE_TIME.format(keyUpdated.getCreatedAt()))));
+    }
+
+    @Test
+    void when_updateKeyWithInvalidAccountNumber_expect_statusUnprocessableEntity() throws Exception {
+        updateKeyRequestWebDTO.setAccountNumber(123456789);
+
+        mockMvc.perform(patch(BASE_URL + "/{id}", UUID.randomUUID())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(OBJECT_MAPPER.asJsonString(updateKeyRequestWebDTO)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.code", equalTo(422)))
+                .andExpect(jsonPath("$.error", equalTo("Unprocessable Entity")))
+                .andExpect(jsonPath("$.message", equalTo("Invalid Arguments")))
+                .andExpect(jsonPath("$.fieldErrors[0].field", equalTo("accountNumber")))
+                .andExpect(jsonPath("$.fieldErrors[0].message", equalTo("numeric value out of bounds (<8 digits>.<0 digits> expected)")));
+    }
+
+    @Test
+    void when_updateKeyWithNullAccountType_expect_statusUnprocessableEntity() throws Exception {
+        updateKeyRequestWebDTO.setAccountType(null);
+
+        mockMvc.perform(patch(BASE_URL + "/{id}", UUID.randomUUID())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(OBJECT_MAPPER.asJsonString(updateKeyRequestWebDTO)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.code", equalTo(422)))
+                .andExpect(jsonPath("$.error", equalTo("Unprocessable Entity")))
+                .andExpect(jsonPath("$.message", equalTo("Invalid Arguments")))
+                .andExpect(jsonPath("$.fieldErrors[0].field", equalTo("accountType")))
+                .andExpect(jsonPath("$.fieldErrors[0].message", equalTo("must not be null")));
+    }
+
+    @Test
+    void when_updateKeyWithInvalidBranchNumber_expect_statusUnprocessableEntity() throws Exception {
+        updateKeyRequestWebDTO.setBranchNumber(12345);
+
+        mockMvc.perform(patch(BASE_URL + "/{id}", UUID.randomUUID())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(OBJECT_MAPPER.asJsonString(updateKeyRequestWebDTO)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.code", equalTo(422)))
+                .andExpect(jsonPath("$.error", equalTo("Unprocessable Entity")))
+                .andExpect(jsonPath("$.message", equalTo("Invalid Arguments")))
+                .andExpect(jsonPath("$.fieldErrors[0].field", equalTo("branchNumber")))
+                .andExpect(jsonPath("$.fieldErrors[0].message", equalTo("numeric value out of bounds (<4 digits>.<0 digits> expected)")));
+    }
+
+    @Test
+    void when_updateKeyWithInvalidName_expect_statusUnprocessableEntity() throws Exception {
+        updateKeyRequestWebDTO.setName("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+
+        mockMvc.perform(patch(BASE_URL + "/{id}", UUID.randomUUID())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(OBJECT_MAPPER.asJsonString(updateKeyRequestWebDTO)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.code", equalTo(422)))
+                .andExpect(jsonPath("$.error", equalTo("Unprocessable Entity")))
+                .andExpect(jsonPath("$.message", equalTo("Invalid Arguments")))
+                .andExpect(jsonPath("$.fieldErrors[0].field", equalTo("name")))
+                .andExpect(jsonPath("$.fieldErrors[0].message", equalTo("size must be between 1 and 30")));
+    }
+
+    @Test
+    void when_updateKeyWithInvalidLastName_expect_statusUnprocessableEntity() throws Exception {
+        updateKeyRequestWebDTO.setLastName("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+
+        mockMvc.perform(patch(BASE_URL + "/{id}", UUID.randomUUID())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(OBJECT_MAPPER.asJsonString(updateKeyRequestWebDTO)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.code", equalTo(422)))
+                .andExpect(jsonPath("$.error", equalTo("Unprocessable Entity")))
+                .andExpect(jsonPath("$.message", equalTo("Invalid Arguments")))
+                .andExpect(jsonPath("$.fieldErrors[0].field", equalTo("lastName")))
+                .andExpect(jsonPath("$.fieldErrors[0].message", equalTo("size must be between 1 and 45")));
     }
 
 
