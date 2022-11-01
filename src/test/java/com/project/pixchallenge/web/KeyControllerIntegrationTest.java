@@ -100,4 +100,18 @@ public class KeyControllerIntegrationTest {
                 .andExpect(jsonPath("$.createdAt", notNullValue()))
                 .andExpect(jsonPath("$.inactivationDate", notNullValue()));
     }
+
+    @Test
+    void when_tryDeleteNonExistentKey_expect_statusUnprocessableEntity() throws Exception {
+        var savedKey = keyRepository.save(KeyEntity.from(KeyBuilder.cpfCreating()));
+
+        mockMvc.perform(delete(BASE_URL + "/{id}", savedKey.getId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.code", equalTo(422)))
+                .andExpect(jsonPath("$.error", equalTo("Unprocessable Entity")))
+                .andExpect(jsonPath("$.message", equalTo(String
+                        .format("The key with id %s is already inactive", savedKey.getId()))));
+    }
 }
