@@ -16,6 +16,7 @@ import static com.project.pixchallenge.helper.ObjectMapperHelper.OBJECT_MAPPER;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -113,5 +114,29 @@ public class KeyControllerIntegrationTest {
                 .andExpect(jsonPath("$.error", equalTo("Unprocessable Entity")))
                 .andExpect(jsonPath("$.message", equalTo(String
                         .format("The key with id %s is already inactive", savedKey.getId()))));
+    }
+
+    @Test
+    void when_listKey_expect_statusOk() throws Exception {
+        var savedKey = keyRepository.save(KeyEntity.from(KeyBuilder.cpfCreated()));
+
+        mockMvc.perform(get(BASE_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("id", savedKey.getId().toString()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.hasNext", equalTo(false)))
+                .andExpect(jsonPath("$.totalCount", equalTo(1)))
+                .andExpect(jsonPath("$.offset", equalTo(0)))
+                .andExpect(jsonPath("$.pageSize", equalTo(10)))
+                .andExpect(jsonPath("$.keys.[0].id", equalTo(savedKey.getId().toString())))
+                .andExpect(jsonPath("$.keys.[0].keyType", equalTo(savedKey.getType().name())))
+                .andExpect(jsonPath("$.keys.[0].keyValue", equalTo(savedKey.getValue())))
+                .andExpect(jsonPath("$.keys.[0].accountNumber", equalTo(savedKey.getAccountNumber())))
+                .andExpect(jsonPath("$.keys.[0].accountType", equalTo(savedKey.getAccountType().name())))
+                .andExpect(jsonPath("$.keys.[0].branchNumber", equalTo(savedKey.getBranchNumber())))
+                .andExpect(jsonPath("$.keys.[0].name", equalTo(savedKey.getName())))
+                .andExpect(jsonPath("$.keys.[0].lastName", equalTo(savedKey.getLastName())))
+                .andExpect(jsonPath("$.keys.[0].createdAt", notNullValue()));
     }
 }
