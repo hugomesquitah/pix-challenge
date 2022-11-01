@@ -22,6 +22,20 @@
         <sonar.scm.provider>git</sonar.scm.provider>
         <sonar.java.codeCoveragePlugin>jacoco</sonar.java.codeCoveragePlugin>
         <sonar.coverage.jacoco.xmlReportPaths>${project.test.result.directory}/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.exclusions>
+            src/main/java/com/project/pixchallenge/PixChallengeApplication.java,
+            src/main/java/com/project/pixchallenge/core/domain/*,
+            src/main/java/com/project/pixchallenge/web/dto/**/*,
+            src/main/java/com/project/pixchallenge/web/exception/*,
+            src/main/java/com/project/pixchallenge/infra/entities/*
+        </sonar.exclusions>
+        <sonar.coverage.exclusions>
+            src/main/java/com/project/pixchallenge/PixChallengeApplication.java,
+            src/main/java/com/project/pixchallenge/core/domain/*,
+            src/main/java/com/project/pixchallenge/web/dto/**/*,
+            src/main/java/com/project/pixchallenge/web/exception/*,
+            src/main/java/com/project/pixchallenge/infra/entities/*
+        </sonar.coverage.exclusions>
     </properties>
     <dependencies>
         <dependency>
